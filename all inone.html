@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="doc_title">Krishi Mitra - Smart Farming Solution</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-green': '#38784E', // Darker, professional green
+                        'secondary-green': '#51A36D', // Lighter green for accents
+                        'accent-blue': '#2563EB', // Blue for interactive elements
+                        'bg-light': '#F8FBF8', // Very light off-white/greenish background
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Poppins', 'Noto Sans Kannada', 'Noto Sans Malayalam', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles for better visual appeal, prioritizing responsiveness */
+        .feature-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+            border-radius: 0.75rem; /* rounded-xl */
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(56, 120, 78, 0.15);
+        }
+        .hero-slide {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .dot {
+            transition: all 0.3s ease;
+        }
+        .weather-card {
+            background-color: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid #51A36D; /* Secondary green border */
+        }
+
+        /* Mobile Menu Styling */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+            /* Ensure the menu is always on top */
+            z-index: 50; 
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+        /* Hide scrollbars when menu is open */
+        .no-scroll {
+            overflow: hidden;
+        }
+        /* Ensures hero section scales on mobile */
+        @media (max-width: 640px) {
+             .hero-slide > div {
+                padding: 1.5rem;
+             }
+             .hero-slide h1 {
+                font-size: 2.25rem; /* text-4xl on mobile */
+             }
+             .hero-slide p {
+                font-size: 1rem; /* text-base on mobile */
+             }
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-gray-800">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2 font-bold text-xl uppercase text-primary-green">
+                <i class="fa-solid fa-seedling text-2xl"></i>
+                KRISHI <span class="text-secondary-green">MITRA</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center space-x-6 font-semibold text-sm uppercase">
+                <select class="lang-select p-2 border border-gray-200 rounded-lg focus:ring-primary-green focus:border-primary-green cursor-pointer" id="languageDropdown">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                </select>
+                <a href="#" class="hover:text-primary-green transition duration-200" data-i18n="nav_home">Home</a>
+                <a href="https://en.vikaspedia.in/viewcontent/schemesall/schemes-for-farmers" class="hover:text-primary-green transition duration-200" data-i18n="nav_schemes">Government Schemes</a>
+                <a href="testing.html" class="hover:text-primary-green transition duration-200" data-i18n="nav_soil">Know Your Soil</a>
+                <a href="newcalender.html" class="hover:text-primary-green transition duration-200" data-i18n="nav_calendar">Smart Calendar</a>
+            </div>
+            
+            <!-- Icons & Mobile Menu Button -->
+            <div class="flex items-center space-x-4 text-primary-green text-xl">
+                <i class="fa-solid fa-bag-shopping cursor-pointer hover:text-secondary-green"></i>
+                <a href="auth_portal.html" title="Sign Up / Log In">
+                    <i class="fa-solid fa-circle-user cursor-pointer hover:text-secondary-green"></i>
+                </a>
+                <button id="mobile-menu-button" class="lg:hidden text-2xl">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu Overlay (Hidden on LG screens and up) -->
+    <div id="mobile-menu" class="fixed top-0 right-0 w-64 h-full bg-white shadow-2xl z-50 lg:hidden p-6">
+        <div class="flex justify-end mb-8">
+            <button id="close-menu-button" class="text-3xl text-gray-700">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-4 font-semibold text-base uppercase">
+            <select class="lang-select p-2 border border-gray-200 rounded-lg focus:ring-primary-green focus:border-primary-green cursor-pointer" id="mobileLanguageDropdown">
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="ml">മലയാളം (Malayalam)</option>
+            </select>
+            <a href="#" class="hover:text-primary-green transition duration-200 p-2 rounded-lg" data-i18n="nav_home">Home</a>
+            <a href="https://en.vikaspedia.in/viewcontent/schemesall/schemes-for-farmers" class="hover:text-primary-green transition duration-200 p-2 rounded-lg" data-i18n="nav_schemes">Government Schemes</a>
+            <a href="testing.html" class="hover:text-primary-green transition duration-200 p-2 rounded-lg" data-i18n="nav_soil">Know Your Soil</a>
+            <a href="newcalender.html" class="hover:text-primary-green transition duration-200 p-2 rounded-lg" data-i18n="nav_calendar">Smart Calendar</a>
+        </nav>
+    </div>
+
+    <!-- Floating News Icon -->
+    <a href="news.html" target="_blank" 
+        class="fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-xl cursor-pointer hover:scale-110 transition duration-300 z-40 block">
+        <img src="new.jpg" onerror="this.onerror=null; this.src='https://placehold.co/56x56/38784E/FFFFFF?text=NEWS';" alt="News Icon" class="w-full h-full rounded-full object-cover">
+    </a>
+    
+    <!-- Hero Slider Section -->
+    <section class="relative h-[550px] overflow-hidden">
+        <div id="hero-slider" class="w-full h-full relative">
+            
+            <div class="hero-slide absolute inset-0 bg-cover bg-center flex items-center justify-center text-center text-white" 
+                style="background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1920&auto=format&fit=crop'); opacity: 1;">
+                <div class="p-8 max-w-4xl bg-black bg-opacity-40 rounded-xl mx-4">
+                    <div class="text-5xl mb-4 text-secondary-green"><i class="fa-solid fa-cloud-sun-rain"></i></div>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4" data-i18n="hero_title_1">Real-Time Monitoring</h1>
+                    <p class="text-lg mb-8 opacity-90" data-i18n="hero_desc_1">Keep track of your farm's conditions with real-time data and remote system control, ensuring optimal growth and productivity.</p>
+                    <button class="px-6 py-3 bg-secondary-green text-white font-semibold rounded-full hover:bg-primary-green transition duration-300 shadow-lg">
+                        <span data-i18n="btn_start">Start Monitoring</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="hero-slide absolute inset-0 bg-cover bg-center flex items-center justify-center text-center text-white" 
+                style="background-image: url('https://wallpaperaccess.com/full/3482278.jpg'); opacity: 0;">
+                <div class="p-8 max-w-4xl bg-black bg-opacity-40 rounded-xl mx-4">
+                    <div class="text-5xl mb-4 text-orange-400"><i class="fa-solid fa-bell"></i></div>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4" data-i18n="hero_title_sms">SMS Weather Alert</h1>
+                    <p class="text-lg mb-8 opacity-90" data-i18n="hero_desc_sms">Receive critical, location-specific weather alerts and farm advisories directly to your mobile via SMS, even without an internet connection.</p>
+                    <button class="px-6 py-3 bg-secondary-green text-white font-semibold rounded-full hover:bg-primary-green transition duration-300 shadow-lg">
+                        <span data-i18n="btn_subscribe">Subscribe Now</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="hero-slide absolute inset-0 bg-cover bg-center flex items-center justify-center text-center text-white" 
+                style="background-image: url('https://cdn.dribbble.com/userupload/4511943/file/original-fd3c0a32bbfb78c120a6af83bf7ebe39.jpg'); opacity: 0;">
+                <div class="p-8 max-w-4xl bg-black bg-opacity-40 rounded-xl mx-4">
+                    <div class="text-5xl mb-4 text-amber-400"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold mb-4" data-i18n="hero_title_3">Live Market Prices</h1>
+                    <p class="text-lg mb-8 opacity-90" data-i18n="hero_desc_3">Get real-time, accurate pricing for your produce and inputs across various mandis to maximize your profit and make informed selling decisions.</p>
+                    <a href="price.html" class="px-6 py-3 bg-secondary-green text-white font-semibold rounded-full hover:bg-primary-green transition duration-300 shadow-lg inline-block">
+                        <span data-i18n="btn_view_prices">View Prices Now</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slider Navigation Buttons -->
+        <button id="prev-slide" class="absolute top-1/2 left-4 transform -translate-y-1/2 text-3xl sm:text-4xl text-white/70 hover:text-white transition duration-200 w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-black/20 hover:bg-black/40 z-30">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button id="next-slide" class="absolute top-1/2 right-4 transform -translate-y-1/2 text-3xl sm:text-4xl text-white/70 hover:text-white transition duration-200 w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-black/20 hover:bg-black/40 z-30">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- Slider Dots -->
+        <div id="slider-dots" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-30">
+        </div>
+    </section>
+    
+    <!-- Local Weather Section (Responsive layout for form and results) -->
+    <section class="py-12 bg-bg-light">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold uppercase text-primary-green" data-i18n="weather_title">Local Farm Weather Forecast</h2>
+            </div>
+            
+            <div class="weather-card max-w-xl mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <input type="text" id="city-input" placeholder="Enter City/Village Name" value="Kochi, IN" class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-secondary-green focus:border-secondary-green text-base">
+                    <button id="search-btn" class="px-6 py-3 bg-primary-green text-white font-semibold rounded-lg hover:bg-secondary-green transition duration-300">
+                        <i class="fa-solid fa-magnifying-glass sm:mr-2"></i>
+                        <span class="hidden sm:inline" data-i18n="btn_weather">Get Forecast</span>
+                        <span class="sm:hidden" data-i18n="btn_weather_short">Search</span>
+                    </button>
+                </div>
+
+                <div id="weather-display" class="hidden text-center transition duration-500">
+                    <h3 id="city-name" class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2"></h3>
+                    <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 my-6">
+                        <img id="weather-icon" src="" alt="Weather Icon" class="w-16 h-16 sm:w-20 sm:h-20">
+                        <p id="temperature" class="text-5xl sm:text-6xl font-extrabold text-secondary-green"></p>
+                    </div>
+                    
+                    <p id="description" class="text-lg sm:text-xl text-gray-600 font-medium mb-6"></p>
+                    
+                    <!-- Detail Grid: switches to 2 columns on all devices -->
+                    <div class="grid grid-cols-2 gap-4 text-sm sm:text-base text-gray-700 mt-4 border-t pt-4">
+                        <p><i class="fa-solid fa-droplet text-blue-500 mr-2"></i> <span data-i18n="humidity_label">Humidity:</span> <span id="humidity" class="font-semibold"></span></p>
+                        <p><i class="fa-solid fa-wind text-gray-500 mr-2"></i> <span data-i18n="wind_label">Wind Speed:</span> <span id="wind-speed" class="font-semibold"></span></p>
+                    </div>
+                </div>
+
+                <p id="error-message" class="hidden text-red-500 font-semibold mt-4 text-sm sm:text-base" data-i18n="error_not_found">City not found. Please check spelling or use City, Country Code (e.g., Delhi, IN).</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Floating Chat Button -->
+    <a href="krishi.html" class="fixed bottom-6 right-6 bg-accent-blue text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl cursor-pointer shadow-xl hover:bg-blue-600 transition duration-300 z-40" title="Chat with Krishi Mitra">
+        <i class="fa-regular fa-comment-dots"></i>
+    </a>
+    
+    <!-- Feature Cards Section -->
+    <section class="py-16 md:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-secondary-green font-semibold text-sm uppercase tracking-widest" data-i18n="feat_subtitle">Reasons to Choose Us</span>
+                <h2 class="text-3xl sm:text-4xl font-bold uppercase text-gray-900 mt-2" data-i18n="feat_title">What We Are Doing</h2>
+            </div>
+
+            <!-- Grid: 1 column on mobile, 2 on small screens, 3 on large screens -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-leaf text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card1_title">Soil Health Report</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card1_desc">Use our AI-powered soil health report to help farmers make informed decisions about their soil health.</p>
+                </div>
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-cart-shopping text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card2_title">Farmer's Marketplace</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card2_desc">A marketplace for farmers to sell their products and services without the need of intermediaries.</p>
+                </div>
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-cloud-sun text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card3_title">Local Weather Forecast</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card3_desc">Get local weather forecasts to help farmers make informed decisions about their farming practices.</p>
+                </div>
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-chart-line text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card4_title">Live Market Prices</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card4_desc">Check real-time commodity prices from different mandis to ensure you get the best value for your harvest.</p>
+                </div>
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-circle-info text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card5_title">Agriculture Info</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card5_desc">Get information on the latest agricultural trends and strategies to help farmers make informed decisions.</p>
+                </div>
+                <div class="feature-card bg-white p-6 sm:p-8 rounded-xl shadow-md border border-gray-100">
+                    <i class="fa-solid fa-handshake-angle text-4xl sm:text-5xl text-primary-green mb-4"></i>
+                    <h3 class="text-lg sm:text-xl font-semibold mb-3 text-gray-900" data-i18n="card6_title">Community</h3>
+                    <p class="text-gray-500 text-sm" data-i18n="card6_desc">Join our community of farmers who help each other make informed decisions about their farming practices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section (Responsive) -->
+    <section class="py-16 md:py-24 bg-gray-100">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl sm:text-3xl font-bold text-center mb-12 text-primary-green" data-i18n="impact_title">Our Impact</h2>
+            <!-- Grid: 2 columns on mobile, 4 on medium screens -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                <div class="impact-card bg-white p-4 sm:p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="text-sm sm:text-lg font-medium text-gray-600" data-i18n="impact1">Farmers Connected</h4>
+                    <div class="text-3xl sm:text-4xl font-extrabold text-primary-green mt-2">5,000+</div>
+                </div>
+                <div class="impact-card bg-white p-4 sm:p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="text-sm sm:text-lg font-medium text-gray-600" data-i18n="impact2">Soil Health Reports</h4>
+                    <div class="text-3xl sm:text-4xl font-extrabold text-primary-green mt-2">12,000+</div>
+                </div>
+                <div class="impact-card bg-white p-4 sm:p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="text-sm sm:text-lg font-medium text-gray-600" data-i18n="impact3">Cities Served</h4>
+                    <div class="text-3xl sm:text-4xl font-extrabold text-primary-green mt-2">150+</div>
+                </div>
+                <div class="impact-card bg-white p-4 sm:p-6 rounded-xl shadow-lg text-center">
+                    <h4 class="text-sm sm:text-lg font-medium text-gray-600" data-i18n="impact4">Acres Improved</h4>
+                    <div class="text-3xl sm:text-4xl font-extrabold text-primary-green mt-2">10,000+</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (Responsive) -->
+    <section class="py-16 md:py-24 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2" data-i18n="testi_title">Testimonials</h2>
+                <span class="text-gray-500 text-base sm:text-lg" data-i18n="testi_sub">What our previous users are saying</span>
+            </div>
+
+            <!-- Grid: 1 column on mobile, 3 on medium screens -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card p-6 bg-bg-light rounded-xl shadow-md border-t-4 border-primary-green">
+                    <img src="https://img.freepik.com/premium-photo/maharashtra-look-farmer-happy-farmer-standing-cwopea-farm_898049-1033.jpg" onerror="this.onerror=null; this.src='https://placehold.co/80x80/38784E/FFFFFF?text=Farmer';" alt="Farmer" class="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-2 ring-primary-green">
+                    <p class="text-gray-600 italic mb-4 text-center text-sm" data-i18n="t1_text">"Using Krishi Mitra's advanced tools and resources, I've seen a significant improvement in my farm's productivity."</p>
+                    <div class="h-1 w-10 bg-secondary-green mx-auto my-3"></div>
+                    <div class="font-bold text-sm uppercase text-gray-900" data-i18n="t1_name">Kamal Nayan</div>
+                    <div class="text-xs text-gray-500" data-i18n="t1_role">Farmer, Maharashtra</div>
+                </div>
+
+                <div class="testimonial-card p-6 bg-bg-light rounded-xl shadow-md border-t-4 border-primary-green">
+                    <img src="https://kj1bcdn.b-cdn.net/media/38401/farmer_1.jpg" onerror="this.onerror=null; this.src='https://placehold.co/80x80/38784E/FFFFFF?text=Farmer';" alt="Farmer" class="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-2 ring-primary-green">
+                    <p class="text-gray-600 italic mb-4 text-center text-sm" data-i18n="t2_text">"Krishi Mitra's community marketplace has opened up new avenues for me to sell my produce directly to consumers."</p>
+                    <div class="h-1 w-10 bg-secondary-green mx-auto my-3"></div>
+                    <div class="font-bold text-sm uppercase text-gray-900" data-i18n="t2_name">S Mishra</div>
+                    <div class="text-xs text-gray-500" data-i18n="t2_role">Farmer, Uttar Pradesh</div>
+                </div>
+
+                <div class="testimonial-card p-6 bg-bg-light rounded-xl shadow-md border-t-4 border-primary-green">
+                    <img src="https://www.hindustantimes.com/rf/image_size_960x540/HT/p2/2020/05/28/Pictures/november-hindustan-through-november-mustard-patiala-village_dc3fb07c-a0d4-11ea-b043-295af9ca78f2.jpg" onerror="this.onerror=null; this.src='https://placehold.co/80x80/38784E/FFFFFF?text=Farmer';" alt="Farmer" class="w-20 h-20 rounded-full object-cover mx-auto mb-4 ring-2 ring-primary-green">
+                    <p class="text-gray-600 italic mb-4 text-center text-sm" data-i18n="t3_text">"The sustainable farming techniques I've learned through Krishi Mitra have boosted my yield and protected the environment."</p>
+                    <div class="h-1 w-10 bg-secondary-green mx-auto my-3"></div>
+                    <div class="font-bold text-sm uppercase text-gray-900" data-i18n="t3_name">Diljeet</div>
+                    <div class="text-xs text-gray-500" data-i18n="t3_role">Farmer, Punjab</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section (Responsive) -->
+    <footer class="bg-white pt-12 border-t border-gray-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Grid: 2 columns on mobile, 4 on desktop -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="#" class="flex items-center space-x-2 font-bold text-xl uppercase text-primary-green">
+                        <i class="fa-solid fa-seedling text-2xl"></i>
+                        KRISHI <span class="text-secondary-green">MITRA</span>
+                    </a>
+                    <p class="text-gray-500 text-sm mt-4" data-i18n="foot_desc">Krishi-Mitra is a revolutionary agriculture platform where you can find all solutions in one place.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-base font-semibold text-gray-900" data-i18n="foot_support">Support</h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-primary-green transition duration-200" data-i18n="foot_about">About Us</a></li>
+                        <li><a href="#" class="hover:text-primary-green transition duration-200" data-i18n="foot_contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-base font-semibold text-gray-900" data-i18n="foot_links">Useful Links</h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li><a href="https://en.vikaspedia.in/viewcontent/schemesall/schemes-for-farmers" class="hover:text-primary-green transition duration-200" data-i18n="nav_schemes">Government Schemes</a></li>
+                        <li><a href="#" class="hover:text-primary-green transition duration-200" data-i18n="nav_calendar">Smart Calendar</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-base font-semibold text-gray-900">Follow Us</h4>
+                    <div class="flex space-x-4 text-xl text-primary-green">
+                        <a href="#" class="hover:text-secondary-green cursor-pointer transition duration-200"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-secondary-green cursor-pointer transition duration-200"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/krishimitra7/?igsh=cHpmb21zYTh1NnRz&utm_source=qr#" class="hover:text-secondary-green cursor-pointer transition duration-200">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 py-4 flex flex-col md:flex-row justify-between items-center text-xs font-medium text-gray-700">
+                <span class="mb-2 md:mb-0">© 2025 Krishi Mitra. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Internationalization (i18n) Logic ---
+        const translations = {
+            en: {
+                doc_title: "Krishi Mitra - Smart Farming Solution",
+                nav_home: "Home",
+                nav_schemes: "Government Schemes", 
+                nav_soil: "Know Your Soil",
+                nav_calendar: "Smart Calendar", 
+                hero_title_1: "Real-Time Monitoring",
+                hero_desc_1: "Keep track of your farm's conditions with real-time data and remote system control, ensuring optimal growth and productivity.",
+                btn_start: "Start Monitoring",
+                hero_title_sms: "SMS Weather Alert",
+                hero_desc_sms: "Receive critical, location-specific weather alerts and farm advisories directly to your mobile via SMS, even without an internet connection.",
+                btn_subscribe: "Subscribe Now",
+                hero_title_3: "Live Market Prices",
+                hero_desc_3: "Get real-time, accurate pricing for your produce and inputs across various mandis to maximize your profit and make informed selling decisions.",
+                btn_view_prices: "View Prices Now", 
+                
+                feat_subtitle: "Reasons to Choose Us",
+                feat_title: "What We Are Doing",
+                card1_title: "Soil Health Report",
+                card1_desc: "Use our AI-powered soil health report to help farmers make informed decisions about their soil health.",
+                card2_title: "Farmer's Marketplace",
+                card2_desc: "A marketplace for farmers to sell their products and services without the need of intermediaries.",
+                card3_title: "Local Weather Forecast",
+                card3_desc: "Get local weather forecasts to help farmers make informed decisions about their farming practices.",
+                card4_title: "Live Market Prices",
+                card4_desc: "Check real-time commodity prices from different mandis to ensure you get the best value for your harvest.",
+                card5_title: "Agriculture Info",
+                card5_desc: "Get information on the latest agricultural trends and strategies to help farmers make informed decisions.",
+                card6_title: "Community",
+                card6_desc: "Join our community of farmers who help each other make informed decisions about their farming practices.",
+                impact_title: "Our Impact",
+                impact1: "Farmers Connected",
+                impact2: "Soil Health Reports",
+                impact3: "Cities Served",
+                impact4: "Acres Improved",
+                testi_title: "Testimonials",
+                testi_sub: "What previous users are saying",
+                t1_text: "\"Using Krishi Mitra's advanced tools and resources, I've seen a significant improvement in my farm's productivity.\"",
+                t1_name: "Kamal Nayan",
+                t1_role: "Farmer, Maharashtra",
+                t2_text: "\"Krishi Mitra's community marketplace has opened up new avenues for me to sell my produce directly to consumers.\"",
+                t2_name: "S Mishra",
+                t2_role: "Farmer, Uttar Pradesh",
+                t3_text: "\"The sustainable farming techniques I've learned through Krishi Mitra have boosted my yield and protected the environment.\"",
+                t3_name: "Diljeet",
+                t3_role: "Farmer, Punjab",
+                foot_support: "Support",
+                foot_about: "About Us",
+                foot_contact: "Contact Us",
+                foot_links: "Useful Links",
+                foot_desc: "Krishi-Mitra is a revolutionary agriculture platform where you can find all solutions in one place.",
+                weather_title: "Local Farm Weather Forecast",
+                btn_weather: "Get Forecast",
+                btn_weather_short: "Search", // Added for mobile button
+                error_not_found: "City not found. Please check spelling or use City, Country Code (e.g., Delhi, IN).",
+                humidity_label: "Humidity:",
+                wind_label: "Wind Speed:",
+                city_placeholder: "Enter City/Village Name",
+            },
+            hi: {
+                doc_title: "कृषि मित्र - स्मार्ट कृषि समाधान",
+                nav_home: "होम",
+                nav_schemes: "सरकारी योजनाएं", 
+                nav_soil: "अपनी मिट्टी जानें",
+                nav_calendar: "स्मार्ट कैलेंडर", 
+                hero_title_1: "रीयल-टाइम मॉनिटरिंग",
+                hero_desc_1: "रीयल-टाइम डेटा और रिमोट सिस्टम नियंत्रण के साथ अपने खेत की स्थिति पर नज़र रखें, जो इष्टतम विकास और उत्पादकता सुनिश्चित करता है।",
+                btn_start: "मॉनिटरिंग शुरू करें",
+                hero_title_sms: "एसएमएस मौसम अलर्ट",
+                hero_desc_sms: "इंटरनेट कनेक्शन के बिना भी, सीधे अपने मोबाइल पर एसएमएस के माध्यम से महत्वपूर्ण, स्थान-विशिष्ट मौसम अलर्ट और कृषि सलाह प्राप्त करें।",
+                btn_subscribe: "अभी सदस्यता लें",
+                hero_title_3: "लाइव बाजार मूल्य",
+                hero_desc_3: "अपने लाभ को अधिकतम करने और सूचित बिक्री निर्णय लेने के लिए विभिन्न मंडियों में अपनी उपज और इनपुट के लिए वास्तविक समय, सटीक मूल्य निर्धारण प्राप्त करें।",
+                btn_view_prices: "अभी मूल्य देखें", 
+                
+                feat_subtitle: "हमें चुनने के कारण",
+                feat_title: "हम क्या कर रहे हैं",
+                card1_title: "मृदा स्वास्थ्य रिपोर्ट",
+                card1_desc: "किसानों को उनकी मिट्टी के स्वास्थ्य के बारे में सूचित निर्णय लेने में मदद करने के लिए हमारी एआई-संचालित मृदा स्वास्थ्य रिपोर्ट का उपयोग करें।",
+                card2_title: "किसान बाजार",
+                card2_desc: "किसानों के लिए बिचौलियों की आवश्यकता के बिना अपने उत्पादों और सेवाओं को बेचने के लिए एक बाज़ार।",
+                card3_title: "स्थानीय मौसम का पूर्वानुमान",
+                card3_desc: "किसानों को उनकी खेती के बारे में सूचित निर्णय लेने में मदद करने के लिए स्थानीय मौसम पूर्वानुमान प्राप्त करें।",
+                card4_title: "लाइव बाजार मूल्य",
+                card4_desc: "अपनी फसल का सर्वोत्तम मूल्य सुनिश्चित करने के लिए विभिन्न मंडियों से वास्तविक समय के कमोडिटी मूल्य जांचें।",
+                card5_title: "कृषि जानकारी",
+                card5_desc: "किसानों को सूचित निर्णय लेने में मदद करने के लिए नवीनतम कृषि रुझानों और रणनीतियों पर जानकारी प्राप्त करें।",
+                card6_title: "समुदाय",
+                card6_desc: "किसानों के हमारे समुदाय में शामिल हों जो एक-दूसरे को उनकी खेती के बारे में सूचित निर्णय लेने में मदद करते हैं।",
+                impact_title: "हमारा प्रभाव",
+                impact1: "किसान जुड़े",
+                impact2: "मृदा स्वास्थ्य रिपोर्ट",
+                impact3: "शहरों में सेवा",
+                impact4: "एकड़ भूमि में सुधार",
+                testi_title: "प्रशंसापत्र",
+                testi_sub: "हमारे पिछले उपयोगकर्ता क्या कह रहे हैं",
+                t1_text: "\"कृषि मित्र के उन्नत उपकरणों और संसाधनों का उपयोग करके, मैंने अपने खेत की उत्पादकता में महत्वपूर्ण सुधार देखा है।\"",
+                t1_name: "कमल नयन",
+                t1_role: "किसान, महाराष्ट्र",
+                t2_text: "\"कृषि मित्र के कम्युनिटी मार्केटप्लेस ने मुझे अपनी उपज सीधे उपभोक्ताओं को बेचने के नए रास्ते खोल दिए हैं।\"",
+                t2_name: "एस मिश्रा",
+                t2_role: "किसान, उत्तर प्रदेश",
+                t3_text: "\"कृषि मित्र के माध्यम से सीखी गई टिकाऊ खेती की तकनीकों ने मेरी उपज को बढ़ाया है और पर्यावरण की रक्षा की है।\"",
+                t3_name: "दिलजीत",
+                t3_role: "किसान, पंजाब",
+                foot_support: "सहायता",
+                foot_about: "हमारे बारे में",
+                foot_contact: "संपर्क करें",
+                foot_links: "उपयोगी कड़ियाँ",
+                foot_desc: "कृषि-मित्र एक क्रांतिकारी कृषि मंच है जहाँ आप एक ही स्थान पर सभी समाधान पा सकते हैं।",
+                weather_title: "स्थानीय कृषि मौसम पूर्वानुमान",
+                btn_weather: "पूर्वानुमान प्राप्त करें",
+                btn_weather_short: "खोजें", // Added for mobile button
+                error_not_found: "शहर नहीं मिला। कृपया वर्तनी जांचें या शहर, देश कोड का उपयोग करें (उदाहरण: दिल्ली, IN)।",
+                humidity_label: "नमी:",
+                wind_label: "पवन वेग:",
+                city_placeholder: "शहर/गांव का नाम दर्ज करें",
+            },
+            kn: {
+                doc_title: "ಕೃಷಿ ಮಿತ್ರ - ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಪರಿಹಾರ",
+                nav_home: "ಮುಖಪುಟ",
+                nav_schemes: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು", 
+                nav_soil: "ಮಣ್ಣಿನ ಮಾಹಿತಿ",
+                nav_calendar: "ಸ್ಮಾರ್ಟ್ ಕ್ಯಾಲೆಂಡರ್", 
+                hero_title_1: "ನೈಜ-ಸಮಯದ ಮೇಲ್ವಿಚಾರಣೆ",
+                hero_desc_1: "ನೈಜ-ಸಮಯದ ಡೇಟಾ ಮತ್ತು ರಿಮೋಟ್ ಸಿಸ್ಟಮ್ ನಿಯಂತ್ರಣದೊಂದಿಗೆ ನಿಮ್ಮ ಜಮೀನಿನ ಸ್ಥಿತಿಗತಿಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ಗರಿಷ್ಠ ಇಳುವರಿ ಮತ್ತು ಉತ್ಪಾದಕತೆಯನ್ನು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ.",
+                btn_start: "ಮೇಲ್ವಿಚಾರಣೆ ಪ್ರಾರಂಭಿಸಿ",
+                hero_title_sms: "SMS ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ",
+                hero_desc_sms: "ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕವಿಲ್ಲದಿದ್ದರೂ ಸಹ, ನಿಮ್ಮ ಮೊಬೈಲ್‌ಗೆ SMS ಮೂಲಕ ಪ್ರಮುಖ, ಸ್ಥಳ-ನಿರ್ದಿಷ್ಟ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆಗಳು ಮತ್ತು ಕೃಷಿ ಸಲಹೆಗಳನ್ನು ನೇರವಾಗಿ ಸ್ವೀಕರಿಸಿ.",
+                btn_subscribe: "ಈಗ ಚಂದಾದಾರರಾಗಿ",
+                hero_title_3: "ಲೈವ್ ಮಾರುಕಟ್ಟೆ ಬೆಲೆಗಳು",
+                hero_desc_3: "ನಿಮ್ಮ ಲಾಭವನ್ನು ಗರಿಷ್ಠಗೊಳಿಸಲು ಮತ್ತು ತಿಳುವಳಿಕೆಯುಳ್ಳ ಮಾರಾಟ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳಲು ವಿವಿಧ ಮಂಡಿಗಳಲ್ಲಿ ನಿಮ್ಮ ಉತ್ಪನ್ನ ಮತ್ತು ಒಳಹರಿವುಗಳ ನೈಜ-ಸಮಯದ, ನಿಖರವಾದ ಬೆಲೆಯನ್ನು ಪಡೆಯಿರಿ。",
+                btn_view_prices: "ಈಗ ಬೆಲೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ", 
+                
+                feat_subtitle: "ನಮ್ಮನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ಕಾರಣಗಳು",
+                feat_title: "ನಾವು ಏನು ಮಾಡುತ್ತಿದ್ದೇವೆ",
+                card1_title: "ಮಣ್ಣಿನ ಆರೋಗ್ಯ ವರದಿ",
+                card1_desc: "ನಮ್ಮ AI- ಚಾಲಿತ ಮಣ್ಣಿನ ಆರೋಗ್ಯ ವರದಿಯನ್ನು ಬಳಸಿಕೊಂಡು ರೈತರು ಮಣ್ಣಿನ ಬಗ್ಗೆ ಸರಿಯಾದ ನಿರ್ಧಾರ ತೆಗೆದುಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ。",
+                card2_title: "ರೈತರ ಮಾರುಕಟ್ಟೆ",
+                card2_desc: "ಮಧ್ಯವರ್ತಿಗಳ ಅಗತ್ಯವಿಲ್ಲದೆ ರೈತರು ತಮ್ಮ ಉತ್ಪನ್ನಗಳು ಮತ್ತು ಸೇವೆಗಳನ್ನು ಮಾರಾಟ ಮಾಡಲು ಒಂದು ಮಾರುಕಟ್ಟೆ。",
+                card3_title: "ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ",
+                card3_desc: "ರೈತರು ತಮ್ಮ ಕೃಷಿ ಪದ್ಧತಿಗಳ ಬಗ್ಗೆ ತಿಳುವಳಿಕೆಯುಳ್ಳ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳಲು ಸ್ಥಳೀಯ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆಗಳನ್ನು ಪಡೆಯಿರಿ。",
+                card4_title: "ಲೈವ್ ಮಾರುಕಟ್ಟೆ ಬೆಲೆಗಳು",
+                card4_desc: "ನಿಮ್ಮ ಫಸಲಿಗೆ ಉತ್ತಮ ಮೌಲ್ಯವನ್ನು ಪಡೆಯಲು ವಿವಿಧ ಮಂಡಿಗಳಿಂದ ನೈಜ-ಸಮಯದ ಸರಕು ಬೆಲೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ。",
+                card5_title: "ಕೃಷಿ ಮಾಹಿತಿ",
+                card5_desc: "ರೈತರಿಗೆ ಸರಿಯಾದ ನಿರ್ಧಾರಗಳನ್ನು ತೆಗೆದುಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡಲು ಇತ್ತೀಚಿನ ಕೃಷಿ ಪ್ರವೃತ್ತಿಗಳ ಬಗ್ಗೆ ಮಾಹಿತಿ ಪಡೆಯಿರಿ。",
+                card6_title: "ಸಮುದಾಯ",
+                card6_desc: "ನಮ್ಮ ರೈತರ ಸಮುದಾಯಕ್ಕೆ ಸೇರಿ, ಅವರು ಒಬ್ಬರಿಗೊಬ್ಬರು ಸಹಾಯ ಮಾಡುತ್ತಾರೆ。",
+                impact_title: "ನಮ್ಮ ಪ್ರಭಾವ",
+                impact1: "ಸಂಪರ್ಕಿತ ರೈತರು",
+                impact2: "ಮಣ್ಣಿನ ಆರೋಗ್ಯ ವರದಿಗಳು",
+                impact3: "ನಗರಗಳಿಗೆ ಸೇವೆ",
+                impact4: "ಸುಧಾರಿಸಿದ ಎಕರೆ",
+                testi_title: "ಪ್ರಶಂಸೆಗಳು",
+                testi_sub: "ನಮ್ಮ ಹಿಂದಿನ ಬಳಕೆದಾರರು ಏನು ಹೇಳುತ್ತಿದ್ದಾರೆ",
+                t1_text: "\"ಕೃಷಿ ಮಿತ್ರದ ಸುಧಾರಿತ ಉಪಕರಣಗಳು ಮತ್ತು ಸಂಪನ್ಮೂಲಗಳನ್ನು ಬಳಸಿಕೊಂಡು, ನಾನು ನನ್ನ ಜಮೀನಿನ ಉತ್ಪಾದಕತೆಯಲ್ಲಿ ಗಮನಾರ್ಹ ಸುಧಾರಣೆಯನ್ನು ಕಂಡಿದ್ದೇನೆ।\"",
+                t1_name: "ಕಮಲ್ ನಯನ್",
+                t1_role: "ರೈತ, ಮಹಾರಾಷ್ಟ್ರ",
+                t2_text: "\"ಕೃಷಿ ಮಿತ್ರದ ಸಮುದಾಯ ಮಾರುಕಟ್ಟೆ ನನಗೆ ನನ್ನ ಉತ್ಪನ್ನಗಳನ್ನು ನೇರವಾಗಿ ಗ್ರಾಹಕರಿಗೆ ಮಾರಾಟ ಮಾಡಲು ಹೊಸ ಮಾರ್ಗಗಳನ್ನು ತೆರೆದಿದೆ।\"",
+                t2_name: "ಎಸ್ ಮಿಶ್ರಾ",
+                t2_role: "ರೈತ, ಉತ್ತರ ಪ್ರದೇಶ",
+                t3_text: "\"ಕೃಷಿ ಮಿತ್ರದ ಮೂಲಕ ನಾನು ಕಲಿತ ಸುಸ್ಥಿರ ಕೃಷಿ ತಂತ್ರಗಳು ನನ್ನ ಇಳುವರಿಯನ್ನು ಹೆಚ್ಚಿಸಿವೆ ಮತ್ತು ಪರಿಸರವನ್ನು ರಕ್ಷಿಸಿವೆ।\"",
+                t3_name: "ದಿಲ್‌ಜೀತ್",
+                t3_role: "ರೈತ, ಪಂಜಾಬ್",
+                foot_support: "ಬೆಂಬಲ",
+                foot_about: "ನಮ್ಮ ಬಗ್ಗೆ",
+                foot_contact: "ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ",
+                foot_links: "ಉಪಯುಕ್ತ ಕೊಂಡಿಗಳು",
+                foot_desc: "ಕೃಷಿ-ಮಿತ್ರ ಒಂದು ಕ್ರಾಂತಿಕಾರಿ ಕೃಷಿ ವೇದಿಕೆಯಾಗಿದ್ದು, ಇಲ್ಲಿ ನೀವು ಎಲ್ಲಾ ಪರಿಹಾರಗಳನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಕಾಣಬಹುದು。",
+                weather_title: "ಸ್ಥಳೀಯ ಕೃಷಿ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ",
+                btn_weather: "ಮುನ್ಸೂಚನೆ ಪಡೆಯಿರಿ",
+                btn_weather_short: "ಹುಡುಕು", // Added for mobile button
+                error_not_found: "ನಗರ ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಕಾಗುಣಿತವನ್ನು ಪರಿಶೀಲಿಸಿ ಅಥವಾ ನಗರ, ದೇಶ ಕೋಡ್ ಬಳಸಿ (ಉದಾ: ದೆಹಲಿ, IN).",
+                humidity_label: "ತೇವಾಂಶ:",
+                wind_label: "ಗಾಳಿಯ ವೇಗ:",
+                city_placeholder: "ನಗರ/ಗ್ರಾಮದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+            },
+            ml: {
+                doc_title: "കൃഷി മിത്ര - സ്മാർട്ട് ഫാമിംഗ് സൊല്യൂഷൻ",
+                nav_home: "ഹോം",
+                nav_schemes: "സർക്കാർ പദ്ധതികൾ", 
+                nav_soil: "നിങ്ങളുടെ മണ്ണ് അറിയുക",
+                nav_calendar: "സ്മാർട്ട് കലണ്ടർ", 
+                hero_title_1: "തത്സമയ നിരീക്ഷണം",
+                hero_desc_1: "തത്സമയ ഡാറ്റയും വിദൂര സിസ്റ്റം നിയന്ത്രണവും ഉപയോഗിച്ച് നിങ്ങളുടെ ഫാമിലെ സാഹചര്യങ്ങൾ ട്രാക്ക് ചെയ്യുക, ഒപ്റ്റിമൽ വളർച്ചയും ഉൽപാദനക്ഷമതയും ഉറപ്പാക്കുക.",
+                btn_start: "നിരീക്ഷണം ആരംഭിക്കുക",
+                hero_title_sms: "SMS കാലാവസ്ഥാ മുന്നറിയിപ്പ്",
+                hero_desc_sms: "ഇൻ്റർനെറ്റ് കണക്ഷനില്ലാതെ പോലും, എസ്എംഎസ് വഴി നിങ്ങളുടെ മൊബൈലിൽ നേരിട്ട് പ്രധാനപ്പെട്ട, ലൊക്കേഷൻ-നിർദ്ദിഷ്ട കാലാവസ്ഥാ മുന്നറിയിപ്പുകളും കാർഷിക ഉപദേശങ്ങളും സ്വീകരിക്കുക.",
+                btn_subscribe: "ഇപ്പോൾ സബ്സ്ക്രൈബ് ചെയ്യുക",
+                hero_title_3: "തത്സമയ മാർക്കറ്റ് വിലകൾ",
+                hero_desc_3: "നിങ്ങളുടെ ലാഭം പരമാവധിയാക്കാനും വിവരമറിഞ്ഞ വിൽപ്പന തീരുമാനങ്ങളെടുക്കാനും വിവിധ മണ്ടികളിൽ നിങ്ങളുടെ ഉൽപ്പന്നങ്ങൾക്കും ഇൻപുട്ടുകൾക്കും തത്സമയ, കൃത്യമായ വിലകൾ നേടുക。",
+                btn_view_prices: "വിലകൾ ഇപ്പോൾ കാണുക", 
+                
+                feat_subtitle: "ഞങ്ങളെ തിരഞ്ഞെടുക്കുന്നതിനുള്ള കാരണങ്ങൾ",
+                feat_title: "ഞങ്ങൾ എന്താണ് ചെയ്യുന്നത്",
+                card1_title: "മണ്ണ് ആരോഗ്യ റിപ്പോർട്ട്",
+                card1_desc: "കർഷകരെ അവരുടെ മണ്ണിന്റെ ആരോഗ്യത്തെക്കുറിച്ച് വിവരമറിഞ്ഞ തീരുമാനങ്ങൾ എടുക്കാൻ സഹായിക്കുന്നതിന് ഞങ്ങളുടെ AI- പവർഡ് മണ്ണ് ആരോഗ്യ റിപ്പോർട്ട് ഉപയോഗിക്കുക。",
+                card2_title: "കർഷകരുടെ മാർക്കറ്റ് പ്ലേസ്",
+                card2_desc: "ഇടനിലക്കാരുടെ ആവശ്യമില്ലാതെ കർഷകർക്ക് അവരുടെ ഉൽപ്പന്നങ്ങളും സേവനങ്ങളും വിൽക്കാൻ ഒരു മാർക്കറ്റ് പ്ലേസ്。",
+                card3_title: "പ്രാദേശിക കാലാവസ്ഥാ പ്രവചനം",
+                card3_desc: "കർഷകർക്ക് അവരുടെ കൃഷി രീതികളെക്കുറിച്ച് വിവരമറിഞ്ഞ തീരുമാനങ്ങൾ എടുക്കാൻ സഹായിക്കുന്നതിന് പ്രാദേശിക കാലാവസ്ഥാ പ്രവചനം നേടുക。",
+                card4_title: "തത്സമയ മാർക്കറ്റ് വിലകൾ",
+                card4_desc: "നിങ്ങളുടെ വിളക്ക് മികച്ച മൂല്യം ലഭിക്കുന്നുണ്ടെന്ന് ഉറപ്പാക്കാൻ വിവിധ മണ്ടികളിൽ നിന്നുള്ള തത്സമയ ചരക്ക് വിലകൾ പരിശോധിക്കുക。",
+                card5_title: "കാർഷിക വിവരങ്ങൾ",
+                card5_desc: "കർഷകരെ വിവരമറിഞ്ഞ തീരുമാനങ്ങൾ എടുക്കാൻ സഹായിക്കുന്നതിന് ഏറ്റവും പുതിയ കാർഷിക പ്രവണതകളെക്കുറിച്ചും തന്ത്രങ്ങളെക്കുറിച്ചും വിവരങ്ങൾ നേടുക。",
+                card6_title: "കമ്മ്യൂണിറ്റി",
+                card6_desc: "തങ്ങളുടെ കൃഷി രീതികളെക്കുറിച്ച് വിവരമറിഞ്ഞ തീരുമാനങ്ങൾ എടുക്കാൻ പരസ്പരം സഹായിക്കുന്ന കർഷകരുടെ ഞങ്ങളുടെ കമ്മ്യൂണിറ്റിയിൽ ചേരുക。",
+                impact_title: "ഞങ്ങളുടെ സ്വാധീനം",
+                impact1: "കർഷകരെ ബന്ധിപ്പിച്ചു",
+                impact2: "മണ്ണ് ആരോഗ്യ റിപ്പോർട്ടുകൾ",
+                impact3: "സേവനം ലഭിച്ച നഗരങ്ങൾ",
+                impact4: "മെച്ചപ്പെടുത്തിയ ഏക്കർ",
+                testi_title: "സാക്ഷ്യപത്രങ്ങൾ",
+                testi_sub: "ഞങ്ങളുടെ മുൻ ഉപയോക്താക്കൾ പറയുന്നത്",
+                t1_text: "\"കൃഷി മിത്രയുടെ നൂതന ഉപകരണങ്ങളും വിഭവങ്ങളും ഉപയോഗിച്ച്, എൻ്റെ ഫാമിലെ ഉൽപാദനക്ഷമതയിൽ കാര്യമായ പുരോഗതി ഞാൻ കണ്ടിട്ടുണ്ട്।\"",
+                t1_name: "കമൽ നയൻ",
+                t1_role: "കർഷകൻ, മഹാരാഷ്ട്ര",
+                t2_text: "\"കൃഷി മിത്രയുടെ കമ്മ്യൂണിറ്റി മാർക്കറ്റ് പ്ലേസ് എൻ്റെ ഉൽപ്പന്നങ്ങൾ നേരിട്ട് ഉപഭോക്താക്കൾക്ക് വിൽക്കാൻ പുതിയ വഴികൾ തുറന്നു।\"",
+                t2_name: "എസ് മിശ്ര",
+                t2_role: "കർഷകൻ, ഉത്തർപ്രദേശ്",
+                t3_text: "\"കൃഷി മിത്ര വഴി ഞാൻ പഠിച്ച സുസ്ഥിര കൃഷിരീതികൾ എൻ്റെ വിളവ് വർദ്ധിപ്പിക്കുകയും പരിസ്ഥിതിയെ സംരക്ഷിക്കുകയും ചെയ്തു।\"",
+                t3_name: "ദിൽജീത്ത്",
+                t3_role: "കർഷകൻ, പഞ്ചാബ്",
+                foot_support: "പിന്തുണ",
+                foot_about: "ഞങ്ങളെക്കുറിച്ച്",
+                foot_contact: "ഞങ്ങളെ ബന്ധപ്പെടുക",
+                foot_links: "ഉപയോഗപ്രദമായ ലിങ്കുകൾ",
+                foot_desc: "ഒരു വിപ്ലവകരമായ കാർഷിക പ്ലാറ്റ്‌ഫോമാണ് കൃഷി-മിത്ര, ഇവിടെ നിങ്ങൾക്ക് എല്ലാ പരിഹാരങ്ങളും ഒരിടത്ത് കണ്ടെത്താനാകും。",
+                weather_title: "പ്രാദേശിക കാർഷിക കാലാവസ്ഥാ പ്രവചനം",
+                btn_weather: "പ്രവചനം നേടുക",
+                btn_weather_short: "തിരയുക", // Added for mobile button
+                error_not_found: "സ്ഥലം കണ്ടെത്താനായില്ല. ദയവായി അക്ഷരത്തെറ്റ് പരിശോധിക്കുക。",
+                humidity_label: "ഈർപ്പം:",
+                wind_label: "കാറ്റിന്റെ വേഗത:",
+                city_placeholder: "നഗരം/ഗ്രാമത്തിന്റെ പേര് നൽകുക",
+            },
+        };
+
+        let currentLang = 'en';
+
+        // --- Internationalization and Language Logic ---
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName === 'TITLE') {
+                        document.title = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            // Update input placeholder separately
+            const cityInput = document.getElementById('city-input');
+            const placeholderKey = 'city_placeholder';
+            if (cityInput && translations[lang] && translations[lang][placeholderKey]) {
+                cityInput.placeholder = translations[lang][placeholderKey];
+            }
+        }
+
+        // --- Mobile Menu Toggle Logic (Helper Function) ---
+        // Variables declared outside to allow access in DOMContentLoaded scope
+        let mobileMenu, mobileMenuButton, closeMenuButton, languageDropdown, mobileLanguageDropdown;
+
+        function toggleMobileMenu() {
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('open');
+                // Toggle body class for disabling scroll when menu is open
+                document.body.classList.toggle('no-scroll');
+            }
+        }
+
+
+        // --- 2. Hero Slider Logic ---
+        const slides = document.querySelectorAll('.hero-slide');
+        const dotsContainer = document.getElementById('slider-dots');
+        const totalSlides = slides.length;
+        let currentSlide = 0;
+
+        function updateSlider() {
+            slides.forEach((slide, index) => {
+                slide.style.opacity = index === currentSlide ? 1 : 0;
+            });
+            updateDots();
+        }
+
+        function createDots() {
+            // Check if dotsContainer is available before proceeding
+            if (!dotsContainer) return; 
+            dotsContainer.innerHTML = ''; // Clear existing dots
+            slides.forEach((_, index) => {
+                const dot = document.createElement('span');
+                dot.classList.add('dot', 'w-3', 'h-3', 'rounded-full', 'bg-white/50', 'hover:bg-white', 'cursor-pointer');
+                dot.addEventListener('click', () => {
+                    currentSlide = index;
+                    updateSlider();
+                });
+                dotsContainer.appendChild(dot);
+            });
+            updateDots();
+        }
+
+        function updateDots() {
+            if (!dotsContainer) return;
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('bg-white', index === currentSlide);
+                dot.classList.toggle('bg-white/50', index !== currentSlide);
+            });
+        }
+
+        // Auto-slide interval defined outside DOMContentLoaded
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateSlider();
+        }, 8000); // Auto-slide every 8 seconds
+
+
+        // --- 3. Weather Forecast Logic ---
+        const API_KEY = "3081b138babb030c92442a664ca92ba4"; 
+        const DEFAULT_CITY = "Kochi, IN"; 
+
+        // DOM Elements for Weather
+        let cityNameElement, tempElement, descElement, humidityElement, windSpeedElement, iconElement, cityInputElement, searchButton, weatherDisplay, errorMessage;
+
+
+        function showDisplay() {
+            if (weatherDisplay && errorMessage) {
+                weatherDisplay.classList.remove('hidden');
+                errorMessage.classList.add('hidden');
+            }
+        }
+
+        function showError() {
+            if (weatherDisplay && errorMessage && cityNameElement) {
+                weatherDisplay.classList.add('hidden');
+                errorMessage.classList.remove('hidden');
+                cityNameElement.textContent = ''; 
+            }
+        }
+
+        // Function to process and display the data
+        function displayWeather(data) {
+            const tempCelsius = data.main.temp.toFixed(1); 
+            const weatherDescription = data.weather[0].description;
+            const weatherIconCode = data.weather[0].icon;
+            const humidity = data.main.humidity;
+            const windSpeed = (data.wind.speed * 3.6).toFixed(1); // Convert m/s to km/h and fix to 1 decimal
+            
+            const iconUrl = `https://openweathermap.org/img/wn/${weatherIconCode}@2x.png`;
+
+            cityNameElement.textContent = data.name;
+            tempElement.textContent = `${tempCelsius}°C`;
+            // Capitalize the first letter of the description
+            descElement.textContent = weatherDescription.charAt(0).toUpperCase() + weatherDescription.slice(1);
+            humidityElement.textContent = `${humidity}%`;
+            windSpeedElement.textContent = `${windSpeed} km/h`;
+            iconElement.src = iconUrl;
+            iconElement.style.display = 'inline';
+            
+            showDisplay();
+        }
+
+        // Function to fetch weather data
+        async function fetchWeather(city, retries = 3, delay = 1000) {
+            if (retries === 3 && cityNameElement) {
+                // Only show loading message on the first attempt
+                cityNameElement.textContent = `Loading weather for ${city}...`;
+                if(weatherDisplay) weatherDisplay.classList.remove('hidden'); 
+                if(errorMessage) errorMessage.classList.add('hidden'); 
+            }
+            
+            const searchCity = city.trim(); 
+            const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${searchCity}&appid=${API_KEY}&units=metric`;
+
+            try {
+                const response = await fetch(API_URL);
+                
+                if (response.status === 404) {
+                    throw new Error("City not found");
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`API returned status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                displayWeather(data);
+                return; // Success
+                
+            } catch (error) {
+                if (retries > 1 && error.message.includes('API returned status')) {
+                    // Retry for temporary network/server issues
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    await fetchWeather(city, retries - 1, delay * 2); // Exponential backoff
+                } else if (error.message.includes("City not found")) {
+                    showError();
+                } else {
+                    console.error("Failed to fetch weather data after all retries:", error);
+                    showError();
+                }
+            }
+        }
+
+        // Function called when the search button is clicked
+        function searchWeather() {
+            const city = cityInputElement.value.trim();
+            if (city) {
+                fetchWeather(city);
+            } else {
+                // Show a brief console error if input is empty
+                console.error("Please enter a city name.");
+            }
+        }
+        
+        // --- Initialization on DOM Content Loaded (Final, most robust attempt) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Element Initialization ---
+            // Ensure all elements are found immediately on load
+            mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton = document.getElementById('mobile-menu-button');
+            closeMenuButton = document.getElementById('close-menu-button');
+            languageDropdown = document.getElementById('languageDropdown');
+            mobileLanguageDropdown = document.getElementById('mobileLanguageDropdown');
+
+            cityNameElement = document.getElementById('city-name');
+            tempElement = document.getElementById('temperature');
+            descElement = document.getElementById('description');
+            humidityElement = document.getElementById('humidity');
+            windSpeedElement = document.getElementById('wind-speed');
+            iconElement = document.getElementById('weather-icon');
+            cityInputElement = document.getElementById('city-input');
+            searchButton = document.getElementById('search-btn');
+            weatherDisplay = document.getElementById('weather-display');
+            errorMessage = document.getElementById('error-message');
+
+            // --- Menu Event Listeners (FIX: Re-attaching event listeners for robustness) ---
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', toggleMobileMenu);
+            } else {
+                console.error("mobile-menu-button not found.");
+            }
+            if (closeMenuButton) {
+                closeMenuButton.addEventListener('click', toggleMobileMenu);
+            }
+            
+            // --- Language Event Listeners ---
+            if (languageDropdown && mobileLanguageDropdown) {
+                const initialLang = languageDropdown.value;
+                mobileLanguageDropdown.value = initialLang;
+                setLanguage(initialLang);
+
+                languageDropdown.addEventListener('change', function() {
+                    setLanguage(this.value);
+                    mobileLanguageDropdown.value = this.value;
+                });
+
+                mobileLanguageDropdown.addEventListener('change', function() {
+                    setLanguage(this.value);
+                    languageDropdown.value = this.value;
+                    toggleMobileMenu(); // Close menu after selection
+                });
+            }
+
+            // --- Slider Initialization ---
+            createDots();
+
+            // --- Weather Event Listeners & Initial Call ---
+            if (searchButton) {
+                searchButton.addEventListener('click', searchWeather);
+            }
+            if (cityInputElement) {
+                cityInputElement.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        searchWeather();
+                        event.preventDefault(); 
+                    }
+                });
+            }
+
+            fetchWeather(DEFAULT_CITY);
+        });
+    </script>
+</body>
+</html>

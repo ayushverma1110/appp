@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="doc_title">Krishi Mitra - User Profile</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        // Replicating the custom Tailwind configuration from the main page
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-green': '#38784E', // Darker, professional green
+                        'secondary-green': '#51A36D', // Lighter green for accents
+                        'accent-blue': '#2563EB', // Blue for interactive elements
+                        'bg-light': '#F8FBF8', // Very light off-white/greenish background
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Poppins', 'Noto Sans Kannada', 'Noto Sans Malayalam', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles to match the theme */
+        .profile-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Style for the custom dialog modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: all 0.2s ease-out;
+        }
+        .modal-backdrop.active {
+            display: flex;
+        }
+        .modal-backdrop.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-bg-light text-gray-800">
+
+    <!-- HEADER (Copied from index.html) -->
+    <header class="sticky top-0 z-50 bg-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <a href="index.html" class="flex items-center space-x-2 font-bold text-xl uppercase text-primary-green">
+                <i class="fa-solid fa-seedling text-2xl"></i>
+                KRISHI <span class="text-secondary-green">MITRA</span>
+            </a>
+            
+            <div class="hidden lg:flex items-center space-x-6 font-semibold text-sm uppercase">
+                <span class="text-sm font-semibold text-primary-green bg-secondary-green/10 px-3 py-1.5 rounded-lg transition duration-300" data-i18n="welcome_message">Welcome Back, User!</span>
+
+                <select class="lang-select p-2 border border-gray-200 rounded-lg focus:ring-primary-green focus:border-primary-green cursor-pointer" id="languageDropdown">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                    <option value="ml">മലയാളം (Malayalam)</option>
+                </select>
+                <a href="index.html" class="hover:text-primary-green transition duration-200" data-i18n="nav_home">Home</a>
+                <a href="https://en.vikaspedia.in/viewcontent/schemesall/schemes-for-farmers" class="hover:text-primary-green transition duration-200" data-i18n="nav_schemes">Government Schemes</a>
+                <a href="testing.html" class="hover:text-primary-green transition duration-200" data-i18n="nav_soil">Know Your Soil</a>
+                <a href="newcalender.html" class="hover:text-primary-green transition duration-200" data-i18n="nav_calendar">Smart Calendar</a>
+            </div>
+            <div class="flex items-center space-x-4 text-primary-green text-xl">
+                <i class="fa-solid fa-bag-shopping cursor-pointer hover:text-secondary-green text-lg"></i>
+                <a href="#" title="User Profile / Log Out">
+                    <i class="fa-solid fa-circle-user cursor-pointer hover:text-secondary-green"></i>
+                </a>
+                <button class="lg:hidden text-2xl"><i class="fa-solid fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- MAIN PROFILE SECTION -->
+    <section class="py-16 md:py-24 bg-bg-light min-h-[80vh]">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="profile-card bg-white p-6 sm:p-10 rounded-xl shadow-2xl border-t-8 border-primary-green">
+                
+                <div class="text-center mb-10">
+                    <img src="https://placehold.co/100x100/51A36D/FFFFFF?text=SV" alt="User Avatar" class="w-24 h-24 rounded-full object-cover mx-auto mb-4 ring-4 ring-secondary-green/50" id="profile-avatar">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-1" data-i18n="profile_title">User Profile</h2>
+                    <p class="text-sm text-gray-500" data-i18n="profile_subtitle">Your Personal Krishi Mitra Dashboard</p>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="mb-8 border-b pb-4">
+                    <h3 class="text-lg font-bold text-primary-green mb-4 border-b border-secondary-green/30 pb-2">
+                        <i class="fa-solid fa-user-gear mr-2"></i>
+                        <span data-i18n="section_personal">Personal Details</span>
+                    </h3>
+                    <div class="space-y-3 text-sm">
+                        <p class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600" data-i18n="label_name">Full Name:</span>
+                            <span class="font-semibold text-gray-800" id="profile-name">Soumy Verma</span>
+                        </p>
+                        <p class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600" data-i18n="label_email">Email:</span>
+                            <span class="font-semibold text-gray-800" id="profile-email">soumyverma6@gmail.com</span>
+                        </p>
+                        <p class="flex justify-between items-center">
+                            <span class="font-medium text-gray-600" data-i18n="label_location">Location:</span>
+                            <span class="font-semibold text-gray-800" id="profile-location">Delhi</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Farming Statistics -->
+                <div class="mb-10">
+                    <h3 class="text-lg font-bold text-primary-green mb-4 border-b border-secondary-green/30 pb-2">
+                        <i class="fa-solid fa-tractor mr-2"></i>
+                        <span data-i18n="section_farm_stats">Farming Statistics</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-bg-light p-4 rounded-lg shadow-inner">
+                            <span class="font-medium text-gray-600 block mb-1" data-i18n="label_farm_size">Land Size (Acres):</span>
+                            <span class="text-xl font-extrabold text-primary-green" id="profile-land-size">12.5</span>
+                        </div>
+                        <div class="bg-bg-light p-4 rounded-lg shadow-inner">
+                            <span class="font-medium text-gray-600 block mb-1" data-i18n="label_main_crop">Main Crop:</span>
+                            <span class="text-xl font-extrabold text-primary-green" data-i18n="crop_wheat">Wheat</span>
+                        </div>
+                        <div class="bg-bg-light p-4 rounded-lg shadow-inner col-span-1 sm:col-span-2">
+                            <span class="font-medium text-gray-600 block mb-1" data-i18n="label_report_date">Last Soil Health Report:</span>
+                            <span class="text-xl font-extrabold text-primary-green">2025-12-8</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <button id="edit-button" onclick="openEditModal()" class="px-8 py-3 bg-secondary-green text-white font-semibold rounded-lg hover:bg-primary-green transition duration-300 shadow-md">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i>
+                        <span data-i18n="btn_edit_profile">Edit Profile</span>
+                    </button>
+                    <!-- Updated Logout Button to link to the new dummy page -->
+                    <a href="sih.html" class="inline-block text-center px-8 py-3 border border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-500 hover:text-white transition duration-300 shadow-md">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                        <span data-i18n="btn_logout">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FLOATING CHAT BUTTON (Copied from index.html) -->
+    <a href="krishi.html" class="fixed bottom-6 right-6 bg-accent-blue text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl cursor-pointer shadow-xl hover:bg-blue-600 transition duration-300 z-40" title="Chat with Krishi Mitra">
+        <i class="fa-regular fa-comment-dots"></i>
+    </a>
+
+    <!-- FOOTER (Copied from index.html) -->
+    <footer class="bg-white pt-12 border-t border-gray-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="#" class="flex items-center space-x-2 font-bold text-xl uppercase text-primary-green">
+                        <i class="fa-solid fa-seedling text-2xl"></i>
+                        KRISHI <span class="text-secondary-green">MITRA</span>
+                    </a>
+                    <p class="text-gray-500 text-sm mt-4" data-i18n="foot_desc">Krishi-Mitra is a revolutionary agriculture platform where you can find all solutions in one place.</p>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-lg font-semibold text-gray-900" data-i18n="foot_support">Support</h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-primary-green" data-i18n="foot_about">About Us</a></li>
+                        <li><a href="#" class="hover:text-primary-green" data-i18n="foot_contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-lg font-semibold text-gray-900" data-i18n="foot_links">Useful Links</h4>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li><a href="https://en.vikaspedia.in/viewcontent/schemesall/schemes-for-farmers" class="hover:text-primary-green" data-i18n="nav_schemes">Government Schemes</a></li>
+                        <li><a href="#" class="hover:text-primary-green" data-i18n="nav_calendar">Smart Calendar</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="mb-5 text-lg font-semibold text-gray-900">Follow Us</h4>
+                    <div class="flex space-x-4 text-xl text-primary-green">
+                        <a href="#" class="hover:text-secondary-green cursor-pointer"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="hover:text-secondary-green cursor-pointer"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/krishimitra7/?igsh=cHpmb21zYTh1NnRz&utm_source=qr#" class="hover:text-secondary-green cursor-pointer">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 py-4 flex flex-col md:flex-row justify-between items-center text-xs font-medium text-gray-700">
+                <span>© 2025 Krishi Mitra. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- EDIT PROFILE MODAL (Custom Dialog) -->
+    <div id="edit-modal-backdrop" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 class="text-2xl font-bold text-primary-green mb-6 border-b pb-2" data-i18n="modal_title">Edit Profile</h3>
+            
+            <form id="edit-profile-form" onsubmit="event.preventDefault(); saveProfile();">
+                <div class="space-y-4">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="input-name" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="label_name">Full Name:</label>
+                        <input type="text" id="input-name" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-secondary-green focus:border-secondary-green">
+                    </div>
+                    <!-- Email -->
+                    <div>
+                        <label for="input-email" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="label_email">Email:</label>
+                        <input type="email" id="input-email" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-secondary-green focus:border-secondary-green">
+                    </div>
+                    <!-- Location -->
+                    <div>
+                        <label for="input-location" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="label_location">Location:</label>
+                        <input type="text" id="input-location" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-secondary-green focus:border-secondary-green">
+                    </div>
+                    <!-- Land Size -->
+                    <div>
+                        <label for="input-land-size" class="block text-sm font-medium text-gray-700 mb-1" data-i18n="label_farm_size">Land Size (Acres):</label>
+                        <input type="number" id="input-land-size" step="0.1" required class="w-full p-2 border border-gray-300 rounded-lg focus:ring-secondary-green focus:border-secondary-green">
+                    </div>
+                </div>
+                
+                <div class="flex justify-end space-x-4 mt-8">
+                    <button type="button" onclick="closeEditModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-150" data-i18n="btn_cancel">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-primary-green text-white rounded-lg hover:bg-secondary-green transition duration-150" data-i18n="btn_save">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END EDIT PROFILE MODAL -->
+
+
+    <script>
+        // --- 1. Internationalization (i18n) Logic ---
+        const translations = {
+            en: {
+                doc_title: "Krishi Mitra - User Profile",
+                welcome_message: "Welcome Back, User!",
+                nav_home: "Home",
+                nav_schemes: "Government Schemes", 
+                nav_soil: "Know Your Soil",
+                nav_calendar: "Smart Calendar",
+                foot_support: "Support",
+                foot_about: "About Us",
+                foot_contact: "Contact Us",
+                foot_links: "Useful Links",
+                foot_desc: "Krishi-Mitra is a revolutionary agriculture platform where you can find all solutions in one place.",
+                
+                // Profile Page Specific Translations
+                profile_title: "User Profile",
+                profile_subtitle: "Your Personal Krishi Mitra Dashboard",
+                section_personal: "Personal Details",
+                section_farm_stats: "Farming Statistics",
+                label_name: "Full Name:",
+                label_email: "Email:",
+                label_location: "Location:",
+                label_farm_size: "Land Size (Acres):",
+                label_main_crop: "Main Crop:",
+                label_report_date: "Last Soil Health Report:",
+                crop_wheat: "Wheat",
+                btn_edit_profile: "Edit Profile",
+                btn_logout: "Logout",
+                
+                // Modal Specific Translations
+                modal_title: "Edit Profile",
+                btn_cancel: "Cancel",
+                btn_save: "Save Changes",
+            },
+            hi: {
+                doc_title: "कृषि मित्र - उपयोगकर्ता प्रोफ़ाइल",
+                welcome_message: "वापसी पर आपका स्वागत है, उपयोगकर्ता!",
+                nav_home: "होम",
+                nav_schemes: "सरकारी योजनाएं",
+                nav_soil: "अपनी मिट्टी जानें",
+                nav_calendar: "स्मार्ट कैलेंडर",
+                foot_support: "सहायता",
+                foot_about: "हमारे बारे में",
+                foot_contact: "संपर्क करें",
+                foot_links: "उपयोगी कड़ियाँ",
+                foot_desc: "कृषि-मित्र एक क्रांतिकारी कृषि मंच है जहाँ आप एक ही स्थान पर सभी समाधान पा सकते हैं।",
+                
+                // Profile Page Specific Translations
+                profile_title: "उपयोगकर्ता प्रोफ़ाइल",
+                profile_subtitle: "आपका व्यक्तिगत कृषि मित्र डैशबोर्ड",
+                section_personal: "व्यक्तिगत विवरण",
+                section_farm_stats: "खेती के आँकड़े",
+                label_name: "पूरा नाम:",
+                label_email: "ईमेल:",
+                label_location: "स्थान:",
+                label_farm_size: "भूमि का आकार (एकड़):",
+                label_main_crop: "मुख्य फसल:",
+                label_report_date: "अंतिम मृदा स्वास्थ्य रिपोर्ट:",
+                crop_wheat: "गेहूं",
+                btn_edit_profile: "प्रोफ़ाइल संपादित करें",
+                btn_logout: "लॉग आउट करें",
+                
+                // Modal Specific Translations
+                modal_title: "प्रोफ़ाइल संपादित करें",
+                btn_cancel: "रद्द करें",
+                btn_save: "परिवर्तन सहेजें",
+            },
+            kn: {
+                doc_title: "ಕೃಷಿ ಮಿತ್ರ - ಬಳಕೆದಾರರ ಪ್ರೊಫೈಲ್",
+                welcome_message: "ಸುಸ್ವಾಗತ, ಬಳಕೆದಾರ!",
+                nav_home: "ಮುಖಪುಟ",
+                nav_schemes: "ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು",
+                nav_soil: "ಮಣ್ಣಿನ ಮಾಹಿತಿ",
+                nav_calendar: "ಸ್ಮಾರ್ಟ್ ಕ್ಯಾಲೆಂಡರ್",
+                foot_support: "ಬೆಂಬಲ",
+                foot_about: "ನಮ್ಮ ಬಗ್ಗೆ",
+                foot_contact: "ನಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸಿ",
+                foot_links: "ಉಪಯುಕ್ತ ಕೊಂಡಿಗಳು",
+                foot_desc: "ಕೃಷಿ-ಮಿತ್ರ ಒಂದು ಕ್ರಾಂತಿಕಾರಿ ಕೃಷಿ ವೇದಿಕೆಯಾಗಿದ್ದು, ಇಲ್ಲಿ ನೀವು ಎಲ್ಲಾ ಪರಿಹಾರಗಳನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಕಾಣಬಹುದು。",
+                
+                // Profile Page Specific Translations
+                profile_title: "ಬಳಕೆದಾರರ ಪ್ರೊಫೈಲ್",
+                profile_subtitle: "ನಿಮ್ಮ ವೈಯಕ್ತಿಕ ಕೃಷಿ ಮಿತ್ರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+                section_personal: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
+                section_farm_stats: "ಕೃಷಿ ಅಂಕಿಅಂಶಗಳು",
+                label_name: "ಪೂರ್ಣ ಹೆಸರು:",
+                label_email: "ಇಮೇಲ್:",
+                label_location: "ಸ್ಥಳ:",
+                label_farm_size: "ಭೂಮಿಯ ಗಾತ್ರ (ಎಕರೆ):",
+                label_main_crop: "ಮುಖ್ಯ ಬೆಳೆ:",
+                label_report_date: "ಕೊನೆಯ ಮಣ್ಣಿನ ಆರೋಗ್ಯ ವರದಿ:",
+                crop_wheat: "ಗೋಧಿ",
+                btn_edit_profile: "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+                btn_logout: "ಲಾಗ್ ಔಟ್ ಮಾಡಿ",
+                
+                // Modal Specific Translations
+                modal_title: "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ",
+                btn_cancel: "ರದ್ದುಮಾಡಿ",
+                btn_save: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+            },
+            ml: {
+                doc_title: "കൃഷി മിത്ര - ഉപയോക്തൃ പ്രൊഫൈൽ",
+                welcome_message: "തിരിച്ചെത്തിയതിന് സ്വാഗതം, ഉപയോക്താവേ!",
+                nav_home: "ഹോം",
+                nav_schemes: "സർക്കാർ പദ്ധതികൾ",
+                nav_soil: "നിങ്ങളുടെ മണ്ണ് അറിയുക",
+                nav_calendar: "സ്മാർട്ട് കലണ്ടർ",
+                foot_support: "പിന്തുണ",
+                foot_about: "ഞങ്ങളെക്കുറിച്ച്",
+                foot_contact: "ഞങ്ങളെ ബന്ധപ്പെടുക",
+                foot_links: "ഉപയോഗപ്രദമായ ലിങ്കുകൾ",
+                foot_desc: "എല്ലാ പരിഹാരങ്ങളും ഒരിടത്ത് കണ്ടെത്താൻ കഴിയുന്ന ഒരു വിപ്ലവകരമായ കാർഷിക പ്ലാറ്റ്‌ഫോമാണ് കൃഷി-മിത്ര.",
+                
+                // Profile Page Specific Translations
+                profile_title: "ഉപയോക്തൃ പ്രൊഫൈൽ",
+                profile_subtitle: "നിങ്ങളുടെ വ്യക്തിഗത കൃഷി മിത്ര ഡാഷ്‌ബോർഡ്",
+                section_personal: "വ്യക്തിഗത വിവരങ്ങൾ",
+                section_farm_stats: "കൃഷി സ്ഥിതിവിവരക്കണക്കുകൾ",
+                label_name: "പൂർണ്ണമായ പേര്:",
+                label_email: "ഇമെയിൽ:",
+                label_location: "സ്ഥലം:",
+                label_farm_size: "കൃഷിഭൂമിയുടെ അളവ് (ഏക്കർ):",
+                label_main_crop: "പ്രധാന വിള:",
+                label_report_date: "അവസാന മണ്ണ് ആരോഗ്യ റിപ്പോർട്ട്:",
+                crop_wheat: "ഗോതമ്പ്",
+                btn_edit_profile: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
+                btn_logout: "ലോഗ് ഔട്ട് ചെയ്യുക",
+                
+                // Modal Specific Translations
+                modal_title: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
+                btn_cancel: "റദ്ദാക്കുക",
+                btn_save: "മാറ്റങ്ങൾ സംരക്ഷിക്കുക",
+            },
+        };
+
+        let currentLang = 'en';
+
+        // --- i18n functions ---
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (element.tagName === 'TITLE') {
+                        document.title = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            // Update static elements in the modal
+            document.getElementById('modal-title').textContent = translations[lang].modal_title;
+            document.getElementById('btn-cancel').textContent = translations[lang].btn_cancel;
+            document.getElementById('btn-save').textContent = translations[lang].btn_save;
+        }
+
+        document.getElementById('languageDropdown').addEventListener('change', function() {
+            setLanguage(this.value);
+        });
+
+        // --- Profile Update Functions ---
+
+        // Helper to update the avatar text based on the name
+        function updateAvatar(fullName) {
+            const initials = fullName.split(' ')
+                                     .map(n => n[0])
+                                     .join('')
+                                     .toUpperCase()
+                                     .substring(0, 2) || 'U';
+            const avatarImg = document.getElementById('profile-avatar');
+            const newUrl = `https://placehold.co/100x100/51A36D/FFFFFF?text=${initials}`;
+            avatarImg.src = newUrl;
+        }
+        
+        // Function to open the modal and pre-fill data
+        function openEditModal() {
+            const modal = document.getElementById('edit-modal-backdrop');
+            
+            // Get current displayed values
+            document.getElementById('input-name').value = document.getElementById('profile-name').textContent.trim();
+            document.getElementById('input-email').value = document.getElementById('profile-email').textContent.trim();
+            document.getElementById('input-location').value = document.getElementById('profile-location').textContent.trim();
+            document.getElementById('input-land-size').value = parseFloat(document.getElementById('profile-land-size').textContent.trim());
+
+            modal.classList.add('active');
+        }
+
+        // Function to close the modal
+        function closeEditModal() {
+            document.getElementById('edit-modal-backdrop').classList.remove('active');
+        }
+
+        // Function to save the changes and update the UI
+        function saveProfile() {
+            // 1. Get new values from modal inputs
+            const newName = document.getElementById('input-name').value.trim();
+            const newEmail = document.getElementById('input-email').value.trim();
+            const newLocation = document.getElementById('input-location').value.trim();
+            const newLandSize = parseFloat(document.getElementById('input-land-size').value);
+
+            // 2. Update display elements
+            document.getElementById('profile-name').textContent = newName;
+            document.getElementById('profile-email').textContent = newEmail;
+            document.getElementById('profile-location').textContent = newLocation;
+            document.getElementById('profile-land-size').textContent = newLandSize.toFixed(1);
+
+            // 3. Update avatar initials
+            updateAvatar(newName);
+
+            // 4. Close the modal
+            closeEditModal();
+        }
+
+
+        // Initialize language and profile on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setLanguage(document.getElementById('languageDropdown').value);
+            // Initial avatar update based on current name
+            const initialName = document.getElementById('profile-name').textContent.trim();
+            updateAvatar(initialName);
+        });
+    </script>
+</body>
+</html>
